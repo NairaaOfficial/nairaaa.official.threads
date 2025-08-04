@@ -5,10 +5,8 @@ import time
 import sys
 import io
 import os
-import openai
 from openai import OpenAI
 from datetime import datetime
-import random
 from dotenv import load_dotenv
 
 # Set the standard output to handle UTF-8
@@ -147,7 +145,12 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
-def create_video_media_container(conn, media_type , params):
+def create_text_container(conn):
+
+    params = {
+        "media_type": "TEXT",
+        "text": TEXT
+    }
 
     query = urllib.parse.urlencode(params)
     endpoint = f"/v1.0/{THREADS_USER_ID}/threads?{query}&access_token={THREADS_ACCESS_TOKEN}"
@@ -201,47 +204,18 @@ if __name__ == "__main__":
     prompt_file = 'THREADS/prompt.txt'
     user_prompt = read_prompt(prompt_file)
 
-    TEXT = call_openai(user_prompt, CHATGPT_KEY)
-    print("Response:\n", TEXT)
-    IMAGE_URL = "https://your-public-server.com/path/to/image.jpg"
-    VIDEO_URL = "https://your-public-server.com/path/to/video.mp4"
-    
     # Check and refresh access token before proceeding
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
     check_access_token(conn)    
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
 
-    print("Creating media container...")
-    # # media_type = ["TEXT","IMAGE","VIDEO"]
-    media_type = ["TEXT"]
-    media_type = random.choice(media_type)  # Randomly select media type
-    print(f"Selected media type: {media_type}")
-    if media_type == "TEXT":
-        print("Creating text media container...")
-        params = {
-            "media_type": media_type,
-            "text": TEXT
-        }
-        container_id = create_video_media_container(conn, media_type, params)
-    elif media_type == "IMAGE":
-        print("Creating image media container...")
-        params = {
-            "media_type": media_type,
-            "image_url": IMAGE_URL,
-            "text": TEXT
-        }
-        container_id = create_video_media_container(conn, media_type, params)
-    elif media_type == "VIDEO":
-        print("Creating video media container...")
-        params = {
-            "media_type": media_type,
-            "video_url": VIDEO_URL,
-            "text": TEXT
-        }
-        container_id = create_video_media_container(conn, media_type, params)
+    TEXT = call_openai(user_prompt, CHATGPT_KEY)
+
+    print("Creating text media container...")
+    container_id = create_text_container(conn)
 
     if container_id:
-        print(f"Media container created: {container_id}")
+        print(f"Text container created: {container_id}")
         print("Waiting 30 seconds for processing...")
         time.sleep(30)
 

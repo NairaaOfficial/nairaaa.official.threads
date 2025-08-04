@@ -1,11 +1,9 @@
-name: THREADS REEL SCHEDULER
+name: TEXT
 
 on:
   workflow_dispatch:
   schedule:
      - cron: '0 */3 * * *'
-  #   - cron: '30 11 * * *'  # Runs at 5:00 PM IST
-    # - cron: '0 16 * * *'   # Runs at 9:30 PM IST
   
 jobs:
   run-script:
@@ -39,7 +37,7 @@ jobs:
 
       # Run your Python script
       - name: Run Python script
-        run: python3 THREADS/thread.py
+        run: python3 THREADS/thread_text.py
         
       # Check if .env has been modified, pull, and push the modified changes.
       - name: Commit and Push Changes

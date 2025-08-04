@@ -1,0 +1,48 @@
+name: IMAGE
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            THREADS/
+            requirements.txt
+          fetch-depth: 1
+
+      # Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.9'  # Specify the Python version you need
+
+      # Install the necessary packages
+      - name: Installed package list
+        run: apt list --installed
+        
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+         python3 -m pip install --upgrade pip
+         pip3 install -r requirements.txt
+
+      # Run your Python script
+      - name: Run Python script
+        run: python3 THREADS/thread_image.py
+
+      # Check if .env has been modified, pull, and push the modified changes.
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add THREADS/.env
+          git commit -m "Update .env after processing" || echo "No changes to commit"
+          git pull --rebase origin main || echo "No changes to pull"
+          git push || echo "No changes to push"
