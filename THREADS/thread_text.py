@@ -158,7 +158,6 @@ def create_text_container(conn):
     conn.request("POST", endpoint)
     res = conn.getresponse()
     data = res.read()
-    conn.close()
 
     if res.status != 200:
         print(f"Error creating media container: {res.status} {res.reason}")
