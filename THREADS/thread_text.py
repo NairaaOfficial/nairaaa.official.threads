@@ -177,7 +177,6 @@ def publish_media_container(conn, media_container_id):
     conn.request("POST", endpoint)
     res = conn.getresponse()
     data = res.read()
-    conn.close()
 
     if res.status != 200:
         print(f"Error publishing post: {res.status} {res.reason}")
