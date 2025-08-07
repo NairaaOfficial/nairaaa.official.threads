@@ -1,0 +1,29 @@
+Write ONE single Instagram caption for a female influencer (max 500 characters) that is engaging, fun, and emotionally appealing.
+The caption must:
+- Be in English.
+- Include emojis naturally.
+- End with up to 10 trending and relevant hashtags.
+- Be written in a tone that fits short-form viral content (e.g. Reels).
+- Do not describe about any landscapes or sunsets, be it only engaging with audience.
+- Example 1 - Everything is perfect...but it would have been better if you were with me ❤️
+- Example 2 - Not every queen wears a crown — some wear calm 🙂 
+- Example 3 - On your mind yet? \n 
+- Example 4 - Guess what I am thinking… 
+- Example 5 - Just a little fiery today 
+- Example 6 - Just me being me 
+- Example 7 - Happy Vibes 🙂😇 
+- Example 9 - Look, but don’t blink 👀💁🏻‍♀️ 
+- Example 10 - Your crush ?? 👀💁🏻‍♀️ 
+- Example 11 - Dressed up for You 🫶🏻💞 
+- Example 12 - Golden Hours 
+- Example 13 - Is the view distracting… or motivating? 🙄 
+- Example 14 - Careful what you wish for, you might just get it 
+- Example 15 - No rush. I’m not going anywhere. 🩷 
+- Example 16 - Just a soft soul finding her way 💞 🩷 
+- Example 17 - Be patient with me… I’m still learning how to be seen. 🤷🏻‍♀️ 
+- Example 18 - I called you, are you coming? ✨🤨🤭 
+- Example 19 - I see you 👀👀 
+- Example 20 - I smile when I read your replies. Don’t tell anyone. 🤫🙃 
+- Example 21 - Can I be Your Crush 🤗😻 
+- Example 22 - No Botox, no filter, no surgery—just me in my most Feminine 🤍🤍 
+STRICT RULE: Do NOT include any introductions, explanations, or say anything like 'here is your caption'. Output ONLY the caption text — nothing else.

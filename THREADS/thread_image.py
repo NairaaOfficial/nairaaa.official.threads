@@ -187,6 +187,106 @@ def publish_media_container(conn, media_container_id):
     result = json.loads(data.decode("utf-8"))
     return result.get("id")
 
+def create_item_container(conn, media_type, media_url, is_carousel_item=True):
+    """
+    Create an item container for an image in a carousel.
+
+    Parameters:
+        conn: HTTP connection object.
+        media_type (str): 'IMAGE'.
+        media_url (str): URL of the image.
+        is_carousel_item (bool): Indicates if the item is part of a carousel.
+
+    Returns:
+        str: The item container ID.
+    """
+    if media_type != "IMAGE":
+        raise ValueError("Only 'IMAGE' media type is supported.")
+
+    params = {
+        "media_type": media_type,
+        "is_carousel_item": str(is_carousel_item).lower(),
+        "image_url": media_url
+    }
+
+    query = urllib.parse.urlencode(params)
+    endpoint = f"/v1.0/{THREADS_USER_ID}/threads?{query}&access_token={THREADS_ACCESS_TOKEN}"
+
+    conn.request("POST", endpoint)
+    res = conn.getresponse()
+    data = res.read()
+
+    if res.status != 200:
+        print(f"Error creating item container: {res.status} {res.reason}")
+        print(data.decode("utf-8"))
+        return None
+
+    result = json.loads(data.decode("utf-8"))
+    return result.get("id")
+
+def create_carousel_container(conn, children, text=None):
+    """
+    Create a carousel container from item containers.
+
+    Parameters:
+        conn: HTTP connection object.
+        children (list): List of item container IDs.
+        text (str): Optional text for the carousel post.
+
+    Returns:
+        str: The carousel container ID.
+    """
+    params = {
+        "media_type": "CAROUSEL",
+        "children": ",".join(children),
+    }
+    if text:
+        params["text"] = text
+
+    query = urllib.parse.urlencode(params)
+    endpoint = f"/v1.0/{THREADS_USER_ID}/threads?{query}&access_token={THREADS_ACCESS_TOKEN}"
+
+    conn.request("POST", endpoint)
+    res = conn.getresponse()
+    data = res.read()
+
+    if res.status != 200:
+        print(f"Error creating carousel container: {res.status} {res.reason}")
+        print(data.decode("utf-8"))
+        return None
+
+    result = json.loads(data.decode("utf-8"))
+    return result.get("id")
+
+def publish_carousel_container(conn, carousel_container_id):
+    """
+    Publish a carousel container.
+
+    Parameters:
+        conn: HTTP connection object.
+        carousel_container_id (str): The carousel container ID.
+
+    Returns:
+        str: The published post ID.
+    """
+    params = {
+        "creation_id": carousel_container_id
+    }
+    query = urllib.parse.urlencode(params)
+    endpoint = f"/v1.0/{THREADS_USER_ID}/threads_publish?{query}&access_token={THREADS_ACCESS_TOKEN}"
+
+    conn.request("POST", endpoint)
+    res = conn.getresponse()
+    data = res.read()
+
+    if res.status != 200:
+        print(f"Error publishing carousel: {res.status} {res.reason}")
+        print(data.decode("utf-8"))
+        return None
+
+    result = json.loads(data.decode("utf-8"))
+    return result.get("id")
+
 def read_prompt(prompt_file):
     print (prompt_file)
     try:
@@ -200,7 +300,7 @@ def read_prompt(prompt_file):
     
 if __name__ == "__main__":
     conn = initialize_connection()
-    prompt_file = 'THREADS/prompt.txt'
+    prompt_file = 'THREADS/prompt_image_video.txt'
     user_prompt = read_prompt(prompt_file)
 
     # Check and refresh access token before proceeding

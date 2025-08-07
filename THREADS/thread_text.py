@@ -199,7 +199,7 @@ def read_prompt(prompt_file):
     
 if __name__ == "__main__":
     conn = initialize_connection()
-    prompt_file = 'THREADS/prompt.txt'
+    prompt_file = 'THREADS/prompt_text.txt'
     user_prompt = read_prompt(prompt_file)
 
     # Check and refresh access token before proceeding
