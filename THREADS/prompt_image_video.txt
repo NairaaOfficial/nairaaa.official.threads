@@ -28,3 +28,4 @@ The caption must:
 - Example 22 - No Botox, no filter, no surgery—just me in my most Feminine 🤍🤍 
 STRICT RULE: Do NOT include any introductions, explanations, or say anything like 'here is your caption'. Output ONLY the caption text — nothing else.
 DO NOT EXCEED 1000 characters limit this include hashtags and Everything.
+Don't use markdown * or ** or \"\"\" anywhere.
