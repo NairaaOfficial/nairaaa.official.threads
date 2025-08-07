@@ -22,6 +22,7 @@ THREADS_USER_ID = os.getenv('THREADS_USER_ID')
 THREADS_ACCESS_TOKEN = os.getenv('THREADS_ACCESS_TOKEN')
 BASE_URL = os.getenv('THREADS_BASE_URL')
 CHATGPT_KEY = os.getenv('CHATGPT_KEY')
+RENDER_BASE_IMAGE_URL = os.getenv('RENDER_BASE_IMAGE_URL')
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
@@ -145,7 +146,7 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
-def create_image_container(conn):
+def create_single_image_container(conn, IMAGE_URL, TEXT):
 
     params = {
         "media_type": "IMAGE",
@@ -168,7 +169,7 @@ def create_image_container(conn):
     result = json.loads(data.decode("utf-8"))
     return result.get("id")
 
-def publish_media_container(conn, media_container_id):
+def publish_single_media_container(conn, media_container_id):
     params = {
         "creation_id": media_container_id
     }
@@ -187,24 +188,21 @@ def publish_media_container(conn, media_container_id):
     result = json.loads(data.decode("utf-8"))
     return result.get("id")
 
-def create_item_container(conn, media_type, media_url, is_carousel_item=True):
+def create_item_container(conn, media_url, is_carousel_item=True):
     """
     Create an item container for an image in a carousel.
 
     Parameters:
         conn: HTTP connection object.
-        media_type (str): 'IMAGE'.
         media_url (str): URL of the image.
         is_carousel_item (bool): Indicates if the item is part of a carousel.
 
     Returns:
         str: The item container ID.
     """
-    if media_type != "IMAGE":
-        raise ValueError("Only 'IMAGE' media type is supported.")
 
     params = {
-        "media_type": media_type,
+        "media_type": "IMAGE",
         "is_carousel_item": str(is_carousel_item).lower(),
         "image_url": media_url
     }
@@ -224,7 +222,7 @@ def create_item_container(conn, media_type, media_url, is_carousel_item=True):
     result = json.loads(data.decode("utf-8"))
     return result.get("id")
 
-def create_carousel_container(conn, children, text=None):
+def create_carousel_container(conn, children, TEXT):
     """
     Create a carousel container from item containers.
 
@@ -240,8 +238,8 @@ def create_carousel_container(conn, children, text=None):
         "media_type": "CAROUSEL",
         "children": ",".join(children),
     }
-    if text:
-        params["text"] = text
+    if TEXT:
+        params["text"] = TEXT
 
     query = urllib.parse.urlencode(params)
     endpoint = f"/v1.0/{THREADS_USER_ID}/threads?{query}&access_token={THREADS_ACCESS_TOKEN}"
@@ -297,9 +295,41 @@ def read_prompt(prompt_file):
         return "prompt file not found."
     except Exception as e:
         return f"An error occurred: {e}"
+
+def get_image_urls_for_day(counter, max_attempts=20):
+    """
+    Returns a list of valid image URLs for a given day.
+    Stops when an image is not found or max_attempts is reached.
+    """
+    urls = []
+    for idx in range(1, max_attempts + 1):
+        url = f"{RENDER_BASE_IMAGE_URL}/{counter}_{idx}.png"
+        parsed_url = urllib.parse.urlparse(url)
+        conn = http.client.HTTPSConnection(parsed_url.netloc)
+        conn.request("HEAD", parsed_url.path)
+        response = conn.getresponse()
+        if response.status == 200:
+            urls.append(url)
+        else:
+            break
+    return urls
+
+def read_counter(counter_file):
+    """Read the current counter value from the file, or initialize it."""
+    if os.path.exists(counter_file):
+        with open(counter_file, 'r') as file:
+            return int(file.read())
+    return 0
     
 if __name__ == "__main__":
     conn = initialize_connection()
+
+    # Define a file to store the counter
+    counter_file = 'counter.txt'    
+    counter = read_counter(counter_file)
+    
+    # Execute the code
+    print(f"Counter : {counter}")
     prompt_file = 'THREADS/prompt_image_video.txt'
     user_prompt = read_prompt(prompt_file)
 
@@ -309,23 +339,57 @@ if __name__ == "__main__":
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
 
     TEXT = call_openai(user_prompt, CHATGPT_KEY)
-    IMAGE_URL = "https://helpful-sunshine-2ca083.netlify.app/1_1.png"  # Replace with your image URL
-    print("Creating image media container...")
-    container_id = create_image_container(conn)
+    print("Generated TEXT:", TEXT)
+    image_urls = get_image_urls_for_day(counter)
+    print("Image URLs for the day:", image_urls)
 
-    if container_id:
-        print(f"Image container created: {container_id}")
-        print("Waiting 30 seconds for processing...")
-        time.sleep(30)
+    if len(image_urls) == 1:
+        IMAGE_URL = image_urls[0]
+        print("Creating image media container...")
+        container_id = create_single_image_container(conn, IMAGE_URL, TEXT)
 
-        print("Publishing media container...")
-        post_id = publish_media_container(conn, container_id)
-        
-        if post_id:
-            print(f"✅ Post published successfully! Post ID: {post_id}")
+        if container_id:
+            print(f"Image container created: {container_id}")
+            print("Waiting 30 seconds for processing...")
+            time.sleep(30)
+
+            print("Publishing media container...")
+            post_id = publish_single_media_container(conn, container_id)
+
+            if post_id:
+                print(f"✅ Post published successfully! Post ID: {post_id}")
+            else:
+                print("❌ Failed to publish the post.")
         else:
-            print("❌ Failed to publish the post.")
+            print("❌ Failed to create media container.")
     else:
-        print("❌ Failed to create media container.")
-    
+        print("Creating carousel item containers...")
+        item_container_ids = []
+        for url in image_urls:
+            item_id = create_item_container(conn, url)
+            if item_id:
+                item_container_ids.append(item_id)
+            else:
+                print(f"❌ Failed to create item container for {url}")
+
+        if item_container_ids:
+            print("Waiting 30 seconds for processing carousel items...")
+            time.sleep(30)
+            print("Creating carousel container...")
+            carousel_id = create_carousel_container(conn, item_container_ids, TEXT)
+            if carousel_id:
+                print(f"Carousel container created: {carousel_id}")
+                print("Waiting 30 seconds for processing carousel...")
+                time.sleep(30)
+                print("Publishing carousel container...")
+                post_id = publish_carousel_container(conn, carousel_id)
+                if post_id:
+                    print(f"✅ Carousel post published successfully! Post ID: {post_id}")
+                else:
+                    print("❌ Failed to publish the carousel post.")
+            else:
+                print("❌ Failed to create carousel container.")
+        else:
+            print("❌ No item containers created for carousel.")
+
     conn.close()

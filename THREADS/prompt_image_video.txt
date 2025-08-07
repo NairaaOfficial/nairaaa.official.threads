@@ -1,4 +1,4 @@
-Write ONE single Instagram caption for a female influencer (max 500 characters) that is engaging, fun, and emotionally appealing.
+Write ONE single Instagram caption for a female influencer (max 1000 characters) that is engaging, fun, and emotionally appealing.
 The caption must:
 - Be in English.
 - Include emojis naturally.
@@ -27,3 +27,4 @@ The caption must:
 - Example 21 - Can I be Your Crush 🤗😻 
 - Example 22 - No Botox, no filter, no surgery—just me in my most Feminine 🤍🤍 
 STRICT RULE: Do NOT include any introductions, explanations, or say anything like 'here is your caption'. Output ONLY the caption text — nothing else.
+DO NOT EXCEED 1000 characters limit this include hashtags and Everything.
