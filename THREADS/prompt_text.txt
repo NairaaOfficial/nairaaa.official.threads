@@ -39,7 +39,8 @@ Every time, randomly pick one of the following themes: These will help you struc
 
 Important Things To Note:
 
-Your response must be a single post, under 500 characters, in a bold, fun, and slightly provocative tone.
+STRICT RULES:
+Your response must be a single post, under 1000 characters, in a bold, fun, and slightly provocative tone.
 Make sure each generation is different from the last few and feels fresh every time.
 Don't use markdown * or ** or \"\"\" anywhere.
 Do not tell which theme you choosed.
