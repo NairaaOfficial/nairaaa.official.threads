@@ -165,6 +165,7 @@ def create_text_container(conn):
         return None
 
     result = json.loads(data.decode("utf-8"))
+    time.sleep(120)  # Wait for a few seconds to ensure the container is created
     return result.get("id")
 
 def publish_media_container(conn, media_container_id):
@@ -184,6 +185,7 @@ def publish_media_container(conn, media_container_id):
         return None
 
     result = json.loads(data.decode("utf-8"))
+    time.sleep(60)  # Wait for a few seconds to ensure the post is published
     return result.get("id")
 
 def read_prompt(prompt_file):
@@ -214,8 +216,6 @@ if __name__ == "__main__":
 
     if container_id:
         print(f"Text container created: {container_id}")
-        print("Waiting 30 seconds for processing...")
-        time.sleep(30)
 
         print("Publishing media container...")
         post_id = publish_media_container(conn, container_id)
