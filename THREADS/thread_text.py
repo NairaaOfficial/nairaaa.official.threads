@@ -145,7 +145,17 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
-def create_text_container(conn):
+def create_text_container_with_retry(conn, TEXT, retries=5):
+    for attempt in range(retries):
+        try:
+            return create_text_container(conn, TEXT)
+        except http.client.RemoteDisconnected:
+            print(f"Attempt {attempt + 1} failed. Retrying...")
+            time.sleep(10)  # Wait before retrying
+    print("All retry attempts failed.")
+    return None
+
+def create_text_container(conn, TEXT):
 
     params = {
         "media_type": "TEXT",
@@ -165,7 +175,7 @@ def create_text_container(conn):
         return None
 
     result = json.loads(data.decode("utf-8"))
-    time.sleep(120)  # Wait for a few seconds to ensure the container is created
+    time.sleep(60)  # Wait for a few seconds to ensure the container is created
     return result.get("id")
 
 def publish_media_container(conn, media_container_id):
@@ -212,7 +222,7 @@ if __name__ == "__main__":
     TEXT = call_openai(user_prompt, CHATGPT_KEY)
 
     print("Creating text media container...")
-    container_id = create_text_container(conn)
+    container_id = create_text_container_with_retry(conn, TEXT)
 
     if container_id:
         print(f"Text container created: {container_id}")
