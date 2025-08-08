@@ -145,6 +145,15 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
+def filter_generated_text(text):
+    """
+    Filters the generated text to remove any unwanted content, such as special characters like * or **.
+    """
+    # Remove all occurrences of * and ** from the text
+    filtered_text = text.replace("*", "")
+    filtered_text = filtered_text.replace("\"", "")
+    return filtered_text
+
 def create_text_container_with_retry(conn, TEXT, retries=5):
     for attempt in range(retries):
         try:
@@ -220,6 +229,9 @@ if __name__ == "__main__":
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
 
     TEXT = call_openai(user_prompt, CHATGPT_KEY)
+    print("Generated TEXT:", TEXT)
+    TEXT = filter_generated_text(TEXT)
+    print("Filtered TEXT:", TEXT)
 
     print("Creating text media container...")
     container_id = create_text_container_with_retry(conn, TEXT)

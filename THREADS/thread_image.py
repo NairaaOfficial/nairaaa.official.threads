@@ -146,6 +146,15 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
+def filter_generated_text(text):
+    """
+    Filters the generated text to remove any unwanted content, such as special characters like * or **.
+    """
+    # Remove all occurrences of * and ** from the text
+    filtered_text = text.replace("*", "")
+    filtered_text = filtered_text.replace("\"", "")
+    return filtered_text
+
 def create_single_image_container(conn, IMAGE_URL, TEXT):
 
     params = {
@@ -340,6 +349,8 @@ if __name__ == "__main__":
 
     TEXT = call_openai(user_prompt, CHATGPT_KEY)
     print("Generated TEXT:", TEXT)
+    TEXT = filter_generated_text(TEXT)
+    print("Filtered TEXT:", TEXT)
     image_urls = get_image_urls_for_day(counter)
     print("Image URLs for the day:", image_urls)
 
