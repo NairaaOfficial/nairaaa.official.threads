@@ -41,9 +41,14 @@ Important Things To Note:
 
 STRICT RULES:
 Your response must be a single post, under 1000 characters, in a bold, fun, and slightly provocative tone.
-Make sure each generation is different from the last few and feels fresh every time.
+Make sure each generation is different from the last few and feels fresh every time. 
+STRICT REQUIREMENTS FOR POLL OPTIONS:
+- The poll must contain at least 2 options and no more than 4 options.
+- Each option must be between 1 and 25 characters long.
+- Do not include options that exceed these limits.
 Return the output in the following format for polls:
 
+STRICTLY Return the response in the following format:
 Question: <Your question here>
 Option A: <Option A text>
 Option B: <Option B text>
@@ -53,3 +58,5 @@ Option D: <Option D text> (Optional)
 Do not use markdown * or ** or """ anywhere.
 Do not tell which theme you chose.
 Do not explain or add context. Just give me the thread text.
+Do Not give any intro or outro text.
+Give ONLY 1 response in the above format.

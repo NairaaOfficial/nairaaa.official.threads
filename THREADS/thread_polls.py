@@ -286,11 +286,11 @@ if __name__ == "__main__":
             time.sleep(30)
 
             print("Publishing poll container...")
-            # post_id = publish_media_container(conn, poll_container_id)
-            # if post_id:
-            #     print(f"✅ Poll post published successfully! Post ID: {post_id}")
-            # else:
-            #     print("❌ Failed to publish the poll post.")
+            post_id = publish_media_container(conn, poll_container_id)
+            if post_id:
+                print(f"✅ Poll post published successfully! Post ID: {post_id}")
+            else:
+                print("❌ Failed to publish the poll post.")
         else:
             print("❌ Failed to create poll container.")
 
