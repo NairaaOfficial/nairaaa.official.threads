@@ -1,7 +1,7 @@
 import os
 
 # Define a file to store the counter
-counter_file = 'counter.txt'
+counter_file = 'counter_image.txt'
 
 def read_counter():
     """Read the current counter value from the file, or initialize it."""

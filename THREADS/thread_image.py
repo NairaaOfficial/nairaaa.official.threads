@@ -334,7 +334,7 @@ if __name__ == "__main__":
     conn = initialize_connection()
 
     # Define a file to store the counter
-    counter_file = 'counter.txt'    
+    counter_file = 'counter_image.txt'    
     counter = read_counter(counter_file)
     
     # Execute the code

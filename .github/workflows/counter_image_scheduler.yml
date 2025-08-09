@@ -1,4 +1,4 @@
-name: COUNTER UPDATE SCHEDULER
+name: COUNTER IMAGE
 
 on:
   workflow_dispatch:
@@ -16,8 +16,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            counter.py
-            counter.txt
+            counter_image.py
+            counter_image.txt
           fetch-depth: 1
 
       # Set up Python environment
@@ -32,14 +32,14 @@ jobs:
 
       # Run your Python script
       - name: Run Python script
-        run: python3 counter.py
-        
-      # Check if counter.txt has been modified, pull, and push the modified changes.
+        run: python3 counter_image.py
+
+      # Check if counter_image.txt has been modified, pull, and push the modified changes.
       - name: Commit and Push Changes
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add counter.txt
-          git commit -m "Update counter.txt after processing" || echo "No changes to commit"
+          git add counter_image.txt
+          git commit -m "Update counter_image.txt after processing" || echo "No changes to commit"
           git pull --rebase origin main || echo "No changes to pull"
           git push || echo "No changes to push"
