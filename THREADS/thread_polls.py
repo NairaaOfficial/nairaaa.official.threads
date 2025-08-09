@@ -5,6 +5,7 @@ import time
 import sys
 import io
 import os
+import random
 from openai import OpenAI
 from datetime import datetime
 from dotenv import load_dotenv
@@ -256,15 +257,100 @@ def parse_poll_output(text):
 
     return question, options
 
+# Default polls list
+default_polls = [
+    {
+        "question": "Is it a red flag if a guy texts back too quickly?",
+        "options": {
+            "option_a": "Yes",
+            "option_b": "No",
+            "option_c": "Depends",
+        },
+    },
+    {
+        "question": "Big chest or big heart?",
+        "options": {
+            "option_a": "Big chest",
+            "option_b": "Big heart",
+        },
+    },
+    {
+        "question": "Lace or leather tonight?",
+        "options": {
+            "option_a": "Lace",
+            "option_b": "Leather",
+        },
+    },
+    {
+        "question": "Woke up feeling like trouble today. What should I do?",
+        "options": {
+            "option_a": "Stay in bed",
+            "option_b": "Go out and slay",
+        },
+    },
+    {
+        "question": "Truth or dare in comments?",
+        "options": {
+            "option_a": "Truth",
+            "option_b": "Dare",
+        },
+    },
+    # New polls added
+    {
+        "question": "Guess what I’m wearing right now…",
+        "options": {
+            "option_a": "Something comfy",
+            "option_b": "Nothing at all",
+            "option_c": "Your favorite color",
+        },
+    },
+    {
+        "question": "Be honest: You like it naughty or nice?",
+        "options": {
+            "option_a": "Naughty 😈",
+            "option_b": "Nice 😇",
+        },
+    },
+    {
+        "question": "Who wants to help me pick tonight’s lingerie? 👀",
+        "options": {
+            "option_a": "Lace",
+            "option_b": "Silk",
+            "option_c": "Nothing",
+        },
+    },
+    {
+        "question": "If I were your naughty secretary… what would you make me do?",
+        "options": {
+            "option_a": "Take notes",
+            "option_b": "Stay late",
+            "option_c": "Break all the rules",
+        },
+    },
+    {
+        "question": "Finish this: If we were on a date…",
+        "options": {
+            "option_a": "We’d laugh all night",
+            "option_b": "We’d get into trouble",
+            "option_c": "We’d never want it to end",
+        },
+    },
+]
+
+def get_random_default_poll():
+    """Returns a random poll from the default polls list."""
+    poll = random.choice(default_polls)
+    return poll["question"], poll["options"]
+
 if __name__ == "__main__":
     conn = initialize_connection()
     prompt_file = 'THREADS/prompt_polls.txt'
     user_prompt = read_prompt(prompt_file)
 
     # Check and refresh access token before proceeding
-    print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
-    check_access_token(conn)    
-    print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
+    print("ACCESS TOKEN = ", THREADS_ACCESS_TOKEN)
+    check_access_token(conn)
+    print("ACCESS TOKEN = ", THREADS_ACCESS_TOKEN)
 
     TEXT = call_openai(user_prompt, CHATGPT_KEY)
     print("Generated TEXT:", TEXT)
@@ -296,5 +382,26 @@ if __name__ == "__main__":
 
     except ValueError as e:
         print(f"Error parsing poll output: {e}")
+        print("Using a default poll instead.")
+        question, poll_options = get_random_default_poll()
+        print("Default Question:", question)
+        print("Default Options:", poll_options)
+
+        # Create poll container with default poll
+        print("Creating poll container with default poll...")
+        poll_container_id = create_poll_container(conn, question, poll_options)
+        if poll_container_id:
+            print(f"Poll container created: {poll_container_id}")
+            print("Waiting 30 seconds for processing...")
+            time.sleep(30)
+
+            print("Publishing poll container...")
+            post_id = publish_media_container(conn, poll_container_id)
+            if post_id:
+                print(f"✅ Poll post published successfully! Post ID: {post_id}")
+            else:
+                print("❌ Failed to publish the poll post.")
+        else:
+            print("❌ Failed to create poll container.")
 
     conn.close()
