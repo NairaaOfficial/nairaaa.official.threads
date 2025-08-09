@@ -1,4 +1,4 @@
-name: TEXT
+name: POLLS
 
 on:
   workflow_dispatch:
