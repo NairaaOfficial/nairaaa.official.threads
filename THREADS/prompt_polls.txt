@@ -42,6 +42,14 @@ Important Things To Note:
 STRICT RULES:
 Your response must be a single post, under 1000 characters, in a bold, fun, and slightly provocative tone.
 Make sure each generation is different from the last few and feels fresh every time.
-Don't use markdown * or ** or \"\"\" anywhere.
-Do not tell which theme you choosed.
+Return the output in the following format for polls:
+
+Question: <Your question here>
+Option A: <Option A text>
+Option B: <Option B text>
+Option C: <Option C text> (Optional)
+Option D: <Option D text> (Optional)
+
+Do not use markdown * or ** or """ anywhere.
+Do not tell which theme you chose.
 Do not explain or add context. Just give me the thread text.
