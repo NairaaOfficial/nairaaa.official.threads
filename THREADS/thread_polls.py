@@ -295,7 +295,6 @@ default_polls = [
             "option_b": "Dare",
         },
     },
-    # New polls added
     {
         "question": "Guess what I’m wearing right now…",
         "options": {
