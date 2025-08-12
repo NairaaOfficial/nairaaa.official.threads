@@ -260,51 +260,22 @@ def parse_poll_output(text):
 # Default polls list
 default_polls = [
     {
-        "question": "Is it a red flag if a guy texts back too quickly?",
+        "question": "Would you rather cuddle all night or kiss all night? 🛌💋",
         "options": {
-            "option_a": "Yes",
-            "option_b": "No",
-            "option_c": "Depends",
+            "option_a": "Cuddle 🛌",
+            "option_b": "Kiss 💋",
         },
     },
     {
-        "question": "Big chest or big heart?",
+        "question": "Guess what I’m wearing right now… 🤔",
         "options": {
-            "option_a": "Big chest",
-            "option_b": "Big heart",
+            "option_a": "Something comfy 🩳",
+            "option_b": "Nothing at all 😏",
+            "option_c": "Your favorite color 🎨",
         },
     },
     {
-        "question": "Lace or leather tonight?",
-        "options": {
-            "option_a": "Lace",
-            "option_b": "Leather",
-        },
-    },
-    {
-        "question": "Woke up feeling like trouble today. What should I do?",
-        "options": {
-            "option_a": "Stay in bed",
-            "option_b": "Go out and slay",
-        },
-    },
-    {
-        "question": "Truth or dare in comments?",
-        "options": {
-            "option_a": "Truth",
-            "option_b": "Dare",
-        },
-    },
-    {
-        "question": "Guess what I’m wearing right now…",
-        "options": {
-            "option_a": "Something comfy",
-            "option_b": "Nothing at all",
-            "option_c": "Your favorite color",
-        },
-    },
-    {
-        "question": "Be honest: You like it naughty or nice?",
+        "question": "Be honest: You like it naughty or nice? 😈😇",
         "options": {
             "option_a": "Naughty 😈",
             "option_b": "Nice 😇",
@@ -313,27 +284,87 @@ default_polls = [
     {
         "question": "Who wants to help me pick tonight’s lingerie? 👀",
         "options": {
-            "option_a": "Lace",
-            "option_b": "Silk",
-            "option_c": "Nothing",
+            "option_a": "Lace 🩲",
+            "option_b": "Silk 🧵",
+            "option_c": "Nothing 😏",
         },
     },
     {
-        "question": "If I were your naughty secretary… what would you make me do?",
+        "question": "If I were your naughty secretary… what would you make me do? 🖋️📂",
         "options": {
-            "option_a": "Take notes",
-            "option_b": "Stay late",
-            "option_c": "Break all the rules",
+            "option_a": "Take notes 📝",
+            "option_b": "Stay late 🕒",
+            "option_c": "Break all the rules 🚫",
         },
     },
     {
-        "question": "Finish this: If we were on a date…",
+        "question": "Finish this: If we were on a date… 💑",
         "options": {
-            "option_a": "We’d laugh all night",
-            "option_b": "We’d get into trouble",
-            "option_c": "We’d never want it to end",
+            "option_a": "We’d laugh all night 😂",
+            "option_b": "We’d get into trouble 😜",
+            "option_c": "We’d never want it to end ❤️",
         },
     },
+    {
+        "question": "Is it a red flag if a guy texts back too quickly? 🚩📱",
+        "options": {
+            "option_a": "Yes ✅",
+            "option_b": "No ❌",
+            "option_c": "Depends 🤔",
+        },
+    },
+    {
+        "question": "Big chest or big heart? ❤️💪",
+        "options": {
+            "option_a": "Big chest 💪",
+            "option_b": "Big heart ❤️",
+        },
+    },
+    {
+        "question": "Lace or leather tonight? 🩲🖤",
+        "options": {
+            "option_a": "Lace 🩲",
+            "option_b": "Leather 🖤",
+        },
+    },
+    {
+        "question": "Woke up feeling like trouble today. What should I do? 😈",
+        "options": {
+            "option_a": "Stay in bed 🛌",
+            "option_b": "Go out and slay 💃",
+        },
+    },
+    {
+        "question": "Truth or dare in comments? 🤔🎲",
+        "options": {
+            "option_a": "Truth 🗣️",
+            "option_b": "Dare 🎯",
+        },
+    },
+    {
+        "question": "What’s your favorite type of kiss? 😘",
+        "options": {
+            "option_a": "Soft and slow 💞",
+            "option_b": "Passionate 🔥",
+            "option_c": "Playful 😜",
+        },
+    },
+    {
+        "question": "What’s your ideal Friday night? 🎉🍷",
+        "options": {
+            "option_a": "Netflix & chill 📺🍿",
+            "option_b": "Party all night 🎉",
+            "option_c": "Dinner date 🍽️",
+        },
+    },
+    {
+        "question": "What’s your favorite way to flirt? 😉",
+        "options": {
+            "option_a": "Eye contact 👀",
+            "option_b": "Playful teasing 😏",
+            "option_c": "Compliments 💬",
+        },
+    }
 ]
 
 def get_random_default_poll():
