@@ -361,8 +361,6 @@ if __name__ == "__main__":
 
         if container_id:
             print(f"Image container created: {container_id}")
-            print("Waiting 30 seconds for processing...")
-            time.sleep(30)
 
             print("Publishing media container...")
             post_id = publish_single_media_container(conn, container_id)
@@ -384,14 +382,10 @@ if __name__ == "__main__":
                 print(f"❌ Failed to create item container for {url}")
 
         if item_container_ids:
-            print("Waiting 30 seconds for processing carousel items...")
-            time.sleep(30)
             print("Creating carousel container...")
             carousel_id = create_carousel_container(conn, item_container_ids, TEXT)
             if carousel_id:
                 print(f"Carousel container created: {carousel_id}")
-                print("Waiting 30 seconds for processing carousel...")
-                time.sleep(30)
                 print("Publishing carousel container...")
                 post_id = publish_carousel_container(conn, carousel_id)
                 if post_id:
