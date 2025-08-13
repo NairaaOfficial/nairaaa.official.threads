@@ -434,4 +434,5 @@ if __name__ == "__main__":
         else:
             print("❌ Failed to create poll container.")
 
-    conn.close()
+    if post_id:
+        conn.close()
