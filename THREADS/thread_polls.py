@@ -212,7 +212,6 @@ def publish_media_container(conn, poll_container_id):
         return None
 
     result = json.loads(data.decode("utf-8"))
-    time.sleep(60)  # Wait for a few seconds to ensure the post is published
     return result.get("id")
 
 def read_prompt(prompt_file):
@@ -387,6 +386,8 @@ if __name__ == "__main__":
     TEXT = filter_generated_text(TEXT)
     print("Filtered TEXT:", TEXT)
 
+    post_id = None
+
     # Parse the OpenAI output
     try:
         question, poll_options = parse_poll_output(TEXT)
@@ -398,8 +399,8 @@ if __name__ == "__main__":
         poll_container_id = create_poll_container(conn, question, poll_options)
         if poll_container_id:
             print(f"Poll container created: {poll_container_id}")
-            print("Waiting 30 seconds for processing...")
-            time.sleep(30)
+            print("Waiting 2 seconds for processing...")
+            time.sleep(2)
 
             print("Publishing poll container...")
             post_id = publish_media_container(conn, poll_container_id)
@@ -422,8 +423,8 @@ if __name__ == "__main__":
         poll_container_id = create_poll_container(conn, question, poll_options)
         if poll_container_id:
             print(f"Poll container created: {poll_container_id}")
-            print("Waiting 30 seconds for processing...")
-            time.sleep(30)
+            print("Waiting 2 seconds for processing...")
+            time.sleep(2)
 
             print("Publishing poll container...")
             post_id = publish_media_container(conn, poll_container_id)
