@@ -24,6 +24,7 @@ THREADS_USER_ID = os.getenv('THREADS_USER_ID')
 THREADS_ACCESS_TOKEN = os.getenv('THREADS_ACCESS_TOKEN')
 BASE_URL = os.getenv('THREADS_BASE_URL')
 CHATGPT_KEY = os.getenv('CHATGPT_KEY')
+RENDER_BASE_VIDEO_URL = os.getenv('RENDER_BASE_VIDEO_URL')
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
@@ -147,7 +148,22 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
-def create_video_media_container(conn, media_type , params):
+def filter_generated_text(text):
+    """
+    Filters the generated text to remove any unwanted content, such as special characters like * or **.
+    """
+    # Remove all occurrences of * and ** from the text
+    filtered_text = text.replace("*", "")
+    filtered_text = filtered_text.replace("\"", "")
+    return filtered_text
+
+def create_video_media_container(conn, VIDEO_URL, TEXT):
+
+    params = {
+        "media_type": "VIDEO",
+        "video_url": VIDEO_URL,
+        "text": TEXT
+    }
 
     query = urllib.parse.urlencode(params)
     endpoint = f"/v1.0/{THREADS_USER_ID}/threads?{query}&access_token={THREADS_ACCESS_TOKEN}"
@@ -155,7 +171,6 @@ def create_video_media_container(conn, media_type , params):
     conn.request("POST", endpoint)
     res = conn.getresponse()
     data = res.read()
-    conn.close()
 
     if res.status != 200:
         print(f"Error creating media container: {res.status} {res.reason}")
@@ -175,7 +190,6 @@ def publish_media_container(conn, media_container_id):
     conn.request("POST", endpoint)
     res = conn.getresponse()
     data = res.read()
-    conn.close()
 
     if res.status != 200:
         print(f"Error publishing post: {res.status} {res.reason}")
@@ -195,55 +209,60 @@ def read_prompt(prompt_file):
         return "prompt file not found."
     except Exception as e:
         return f"An error occurred: {e}"
+
+def get_video_urls_for_day(counter):
+    """
+    Returns a list of valid video URLs for a given day.
+    Stops when a video is not found or max_attempts is reached.
+    """
+    
+    url = f"{RENDER_BASE_VIDEO_URL}/Video_{counter}.mp4"
+    parsed_url = urllib.parse.urlparse(url)
+    conn = http.client.HTTPSConnection(parsed_url.netloc)
+    conn.request("HEAD", parsed_url.path)
+    response = conn.getresponse()
+    if response.status == 200:
+        return url
+    else:
+        return None
+    
+
+def read_counter(counter_file):
+    """Read the current counter value from the file, or initialize it."""
+    if os.path.exists(counter_file):
+        with open(counter_file, 'r') as file:
+            return int(file.read())
+    return 0
     
 if __name__ == "__main__":
     conn = initialize_connection()
-    prompt_file = 'THREADS/prompt.txt'
-    user_prompt = read_prompt(prompt_file)
 
-    # TEXT = call_openai(user_prompt, CHATGPT_KEY)
-    TEXT = "Here is a sample text for the post."  # For testing purposes
-    print("Response:\n", TEXT)
-    VIDEO_URL = "https://www.mediafire.com/file/5jvwxzwwt16q93l/Video_original.mp4"
+    # Define a file to store the counter
+    counter_file = 'counter_video.txt'    
+    counter = read_counter(counter_file)
+    
+    # Execute the code
+    print(f"Counter : {counter}")
+    prompt_file = 'THREADS/prompt_image_video.txt'
+    user_prompt = read_prompt(prompt_file)
 
     # Check and refresh access token before proceeding
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
     check_access_token(conn)    
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
 
-    print("Creating media container...")
-    # # media_type = ["TEXT","IMAGE","VIDEO"]
-    media_type = ["VIDEO"]
-    media_type = random.choice(media_type)  # Randomly select media type
-    print(f"Selected media type: {media_type}")
-    if media_type == "TEXT":
-        print("Creating text media container...")
-        params = {
-            "media_type": media_type,
-            "text": TEXT
-        }
-        container_id = create_video_media_container(conn, media_type, params)
-    elif media_type == "IMAGE":
-        print("Creating image media container...")
-        params = {
-            "media_type": media_type,
-            "image_url": IMAGE_URL,
-            "text": TEXT
-        }
-        container_id = create_video_media_container(conn, media_type, params)
-    elif media_type == "VIDEO":
-        print("Creating video media container...")
-        params = {
-            "media_type": media_type,
-            "video_url": VIDEO_URL,
-            "text": TEXT
-        }
-        container_id = create_video_media_container(conn, media_type, params)
+    TEXT = call_openai(user_prompt, CHATGPT_KEY)
+    print("Generated TEXT:", TEXT)
+    TEXT = filter_generated_text(TEXT)
+    print("Filtered TEXT:", TEXT)
+    VIDEO_URL = get_video_urls_for_day(counter)
+    print("Video URL for the day:", VIDEO_URL)
+
+    print("Creating video media container...")
+    container_id = create_video_media_container(conn, VIDEO_URL, TEXT)
 
     if container_id:
         print(f"Media container created: {container_id}")
-        print("Waiting 30 seconds for processing...")
-        time.sleep(30)
 
         print("Publishing media container...")
         post_id = publish_media_container(conn, container_id)
