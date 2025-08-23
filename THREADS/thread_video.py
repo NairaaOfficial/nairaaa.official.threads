@@ -21,29 +21,111 @@ THREADS_API_VERSION = os.environ['THREADS_API_VERSION']
 THREADS_USER_ID = os.environ['THREADS_USER_ID']
 THREADS_ACCESS_TOKEN = os.environ['THREADS_ACCESS_TOKEN']
 BASE_URL = os.environ['THREADS_BASE_URL']
-CHATGPT_KEY = os.environ['CHATGPT_KEY']
+THREADS_VIDEO_CAPTION_KEY = os.environ['THREADS_VIDEO_CAPTION_KEY']
 RENDER_BASE_VIDEO_URL = os.environ['RENDER_BASE_VIDEO_URL']
+
+DEFAULT_THREADS = [
+    "Guess what I’m wearing right now… hint: it’s not much 😏🔥",
+    "Naughty or nice? Which version of me do you like more? 😉💋",
+    "If I whispered 'come over'… how fast would you be here? 🫣⏳",
+    "Which is more dangerous… my smile or my mind? 😈🖤",
+    "Honest answer: First thing you’d do if I invited you over? 👀",
+    "Would you kiss me first… or let me make the first move? 💋",
+    "Morning hugs or midnight cuddles — which is hotter? 🌅🛏️",
+    "If I sent you one flirty selfie right now… what would you do? 📸😉",
+    "Is teasing more fun… or giving in? 😏🔥",
+    "What’s more tempting — my voice or my eyes? 👀🎙️",
+    "Just got out of the shower… my towel is doing a terrible job 😅🛁",
+    "My bed feels too big tonight… anyone wanna fix that? 😏🛏️",
+    "Who wants to help me pick tonight’s lingerie? Lace or satin? 👙💭",
+    "My DMs are getting a little wild today… should I share? 👀💌",
+    "Currently eating strawberries… but they’d taste better off you 🍓💋",
+    "This dress is way too short… not that I’m complaining 😉👗",
+    "Sitting here bored… someone distract me 😈📱",
+    "Feeling cute tonight… maybe too cute 😏✨",
+    "About to take a bubble bath… care to join? 🛁🫧",
+    "Wearing his hoodie… and nothing else 🖤👀",
+    "Red flag if he replies 'k'? 🚩 or ❤️?",
+    "Lace or leather? Which is sexier on me? 👗🔥",
+    "Morning cuddles or midnight kisses? 🌅💋🌙",
+    "Sweet talker or rough talker — what gets you going? 🥵🗣️",
+    "Chocolate in bed… delicious or dangerous? 🍫🛏️",
+    "Texting or calling — which gets you more excited? 📱💬",
+    "Long slow kiss or quick heated one? 💋🔥",
+    "Soft hands or strong hands? 🫣✋",
+    "Beach date or rooftop drinks? 🏖️🍸",
+    "First kiss on the lips or the neck? 😏💋",
+    "Good morning, troublemakers 😈☀️ Who’s ready to misbehave today?",
+    "Woke up feeling dangerous… and I’m blaming you 😏🌅",
+    "Good night babes… or should I say bad night? 😉🌙",
+    "About to sleep… unless you text me something fun 🫣📱",
+    "Morning kisses >>> morning coffee 😘☕ Agree or not?",
+    "Good night… but my mind is still wide awake 😉🛏️",
+    "Woke up in your hoodie… and your scent’s still on it 🖤",
+    "Sun’s out, legs out ☀️💃",
+    "Who’s taking me out for brunch today? 🥞🥂",
+    "Sweet dreams… if you can after thinking of me 😈💭",
+    "I have a secret… but it’s not safe for Threads 😏🫢",
+    "Last night’s dream? Let’s just say I woke up blushing 😳💭",
+    "I once sent the wrong photo to the wrong person… and it was 🔥🙈",
+    "I have a habit of biting my lip when I’m thinking of something naughty…",
+    "Sometimes I wear his shirt to bed… sometimes I wear nothing at all 😏",
+    "My guilty pleasure? Late-night flirty chats 🖤📱",
+    "Once, I skipped a meeting for… let’s just say, more fun plans 😈",
+    "I’ve been thinking about someone all day… it might be you 😉",
+    "My heart races faster when I’m up to no good 😏💓",
+    "Not all my secrets are meant to be kept… some are meant to be found out 👀",
+    "If I were your naughty secretary… what would you make me do? 📎💼",
+    "POV: You walk in and see me wearing your hoodie and nothing else 👀",
+    "Imagine me as your personal trainer… what’s our first 'workout'? 🏋️‍♀️🔥",
+    "If I was the girl next door… you’d never sleep early 😉🏠",
+    "Tonight’s fantasy: me, you, candlelight, and no rules 😈🕯️",
+    "If I was your roommate… things would get interesting fast 😏",
+    "POV: I’m stuck at home… and you’re the only one who can keep me entertained 🖤",
+    "Imagine I’m your photographer… what’s our first shoot like? 📸🔥",
+    "You + me + rain outside = ? 🌧️💋",
+    "If I was your date tonight, what would we be doing right now? 😉",
+    "Finish this: If we were on a date…",
+    "Describe me using only 3 emojis 👀🔥💋",
+    "First word that comes to mind when you think of me? 🫣",
+    "If you could ask me anything… what would it be? 🖤",
+    "Tell me your favorite compliment you’ve ever given 👄",
+    "Describe your ideal night in 5 words 🛋️🍷🔥💋",
+    "What song reminds you of me? 🎶💭",
+    "Which emoji fits me best? 😈😉🖤",
+    "Tell me your go-to flirting line 😏💬",
+    "Truth or dare in comments — I’m playing 😏",
+    "First one to comment gets a personal question 👄",
+    "Dare me to post my next pic with no filter? 😜📸",
+    "Tell me your wildest fantasy… I won’t judge 😉",
+    "Comment a color… and I’ll tell you what I’d wear in it 💃",
+    "Double tap if you’d kiss me right now 💋",
+    "Dare me to text you something spicy? 🔥📱",
+    "I dare you to DM me your favorite emoji for me 😏",
+    "Tell me something you’ve never told anyone 👀",
+    "If you could spend 24 hours with me… dare or truth? 😉"
+]
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
     return http.client.HTTPSConnection(BASE_URL)
 
-def call_openai(
+def get_gemini_caption(
     prompt: str,
     api_key: str,
     base_url: str = "https://openrouter.ai/api/v1",
-    model: str = "deepseek/deepseek-chat-v3-0324:free",
+    model: str = "google/gemini-2.0-flash-exp:free",
     extra_headers: dict = None,
     extra_body: dict = None
 ) -> str:
     """
-    Uses OpenAI's SDK to get a response from OpenRouter API endpoint.
+    Uses OpenAI's SDK to get a text-only response from OpenRouter Gemini model.
 
     Parameters:
         prompt (str): Prompt to send to the model.
         api_key (str): Your OpenRouter API key.
         base_url (str): API endpoint URL.
-        model (str): Model name.
+        model (str): Model name (default Gemini).
         extra_headers (dict): Optional extra headers for OpenRouter.
         extra_body (dict): Optional extra body for OpenRouter.
 
@@ -55,7 +137,12 @@ def call_openai(
         response = client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "user", "content": prompt}
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt}
+                    ]
+                }
             ],
             temperature=0.7,
             max_tokens=500,
@@ -64,8 +151,16 @@ def call_openai(
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
-        return f"Error: {e}"
+        return random.choice(DEFAULT_THREADS)
 
+def filter_generated_text(text):
+    """
+    Filters the generated text to remove any unwanted content, such as special characters like * or **.
+    """
+    # Remove all occurrences of * and ** from the text
+    filtered_text = text.replace("*", "")
+    filtered_text = filtered_text.replace("\"", "")
+    return filtered_text
 
 def check_access_token(conn):
     """
@@ -145,15 +240,6 @@ def update_env_file(key, value):
     with open(env_file, "w") as file:
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
-
-def filter_generated_text(text):
-    """
-    Filters the generated text to remove any unwanted content, such as special characters like * or **.
-    """
-    # Remove all occurrences of * and ** from the text
-    filtered_text = text.replace("*", "")
-    filtered_text = filtered_text.replace("\"", "")
-    return filtered_text
 
 def create_video_media_container(conn, VIDEO_URL, TEXT):
 
@@ -249,7 +335,7 @@ if __name__ == "__main__":
     check_access_token(conn)    
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
 
-    TEXT = call_openai(user_prompt, CHATGPT_KEY)
+    TEXT = get_gemini_caption(user_prompt, THREADS_VIDEO_CAPTION_KEY)
     print("Generated TEXT:", TEXT)
     TEXT = filter_generated_text(TEXT)
     print("Filtered TEXT:", TEXT)

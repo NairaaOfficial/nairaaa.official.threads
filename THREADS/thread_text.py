@@ -20,7 +20,7 @@ THREADS_API_VERSION = os.environ['THREADS_API_VERSION']
 THREADS_USER_ID = os.environ['THREADS_USER_ID']
 THREADS_ACCESS_TOKEN = os.environ['THREADS_ACCESS_TOKEN']
 BASE_URL = os.environ['THREADS_BASE_URL']
-CHATGPT_KEY = os.environ['CHATGPT_KEY']
+THREADS_TEXT_CAPTION_KEY = os.environ['THREADS_TEXT_CAPTION_KEY']
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
@@ -108,22 +108,22 @@ DEFAULT_THREADS = [
     "If you could spend 24 hours with me… dare or truth? 😉"
 ]
 
-def call_openai(
+def get_gemini_caption(
     prompt: str,
     api_key: str,
     base_url: str = "https://openrouter.ai/api/v1",
-    model: str = "deepseek/deepseek-chat-v3-0324:free",
+    model: str = "google/gemini-2.0-flash-exp:free",
     extra_headers: dict = None,
     extra_body: dict = None
 ) -> str:
     """
-    Uses OpenAI's SDK to get a response from OpenRouter API endpoint.
+    Uses OpenAI's SDK to get a text-only response from OpenRouter Gemini model.
 
     Parameters:
         prompt (str): Prompt to send to the model.
         api_key (str): Your OpenRouter API key.
         base_url (str): API endpoint URL.
-        model (str): Model name.
+        model (str): Model name (default Gemini).
         extra_headers (dict): Optional extra headers for OpenRouter.
         extra_body (dict): Optional extra body for OpenRouter.
 
@@ -135,7 +135,12 @@ def call_openai(
         response = client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "user", "content": prompt}
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt}
+                    ]
+                }
             ],
             temperature=0.7,
             max_tokens=500,
@@ -146,6 +151,14 @@ def call_openai(
     except Exception as e:
         return random.choice(DEFAULT_THREADS)
 
+def filter_generated_text(text):
+    """
+    Filters the generated text to remove any unwanted content, such as special characters like * or **.
+    """
+    # Remove all occurrences of * and ** from the text
+    filtered_text = text.replace("*", "")
+    filtered_text = filtered_text.replace("\"", "")
+    return filtered_text
 
 def check_access_token(conn):
     """
@@ -226,15 +239,6 @@ def update_env_file(key, value):
         file.writelines(updated_lines)
     print(f"Updated {key} in .env file.")
 
-def filter_generated_text(text):
-    """
-    Filters the generated text to remove any unwanted content, such as special characters like * or **.
-    """
-    # Remove all occurrences of * and ** from the text
-    filtered_text = text.replace("*", "")
-    filtered_text = filtered_text.replace("\"", "")
-    return filtered_text
-
 def create_text_container_with_retry(conn, TEXT, retries=5):
     for attempt in range(retries):
         try:
@@ -309,7 +313,7 @@ if __name__ == "__main__":
     check_access_token(conn)    
     print("ACCESS TOKEN = ",THREADS_ACCESS_TOKEN)
 
-    TEXT = call_openai(user_prompt, CHATGPT_KEY)
+    TEXT = get_gemini_caption(user_prompt, THREADS_TEXT_CAPTION_KEY)
     print("Generated TEXT:", TEXT)
     TEXT = filter_generated_text(TEXT)
     print("Filtered TEXT:", TEXT)
