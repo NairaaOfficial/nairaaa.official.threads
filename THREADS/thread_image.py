@@ -7,22 +7,20 @@ import io
 import os
 from openai import OpenAI
 from datetime import datetime
-from dotenv import load_dotenv
 
 # Set the standard output to handle UTF-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Define your access token, Instagram account ID, and the video details
 # Get All required Tokens and Ids,
-load_dotenv()
-APP_ID = os.getenv('APP_ID')
-APP_SECRET = os.getenv('APP_SECRET')
-API_VERSION = os.getenv('API_VERSION')
-THREADS_USER_ID = os.getenv('THREADS_USER_ID')
-THREADS_ACCESS_TOKEN = os.getenv('THREADS_ACCESS_TOKEN')
-BASE_URL = os.getenv('THREADS_BASE_URL')
-CHATGPT_KEY = os.getenv('CHATGPT_KEY')
-RENDER_BASE_IMAGE_URL = os.getenv('RENDER_BASE_IMAGE_URL')
+APP_ID = os.environ['APP_ID']
+APP_SECRET = os.environ['APP_SECRET']
+THREADS_API_VERSION = os.environ['THREADS_API_VERSION']
+THREADS_USER_ID = os.environ['THREADS_USER_ID']
+THREADS_ACCESS_TOKEN = os.environ['THREADS_ACCESS_TOKEN']
+BASE_URL = os.environ['THREADS_BASE_URL']
+CHATGPT_KEY = os.environ['CHATGPT_KEY']
+RENDER_BASE_IMAGE_URL = os.environ['RENDER_BASE_IMAGE_URL']
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
@@ -73,7 +71,7 @@ def check_access_token(conn):
     If not, refresh the token.
     """
     # global ACCESS_TOKEN  # Update global variable
-    endpoint = f"/{API_VERSION}/debug_token?input_token={THREADS_ACCESS_TOKEN}&access_token={THREADS_ACCESS_TOKEN}"
+    endpoint = f"/{THREADS_API_VERSION}/debug_token?input_token={THREADS_ACCESS_TOKEN}&access_token={THREADS_ACCESS_TOKEN}"
     conn.request("GET", endpoint)
     response = conn.getresponse()
     data = json.loads(response.read().decode('utf-8'))
@@ -104,7 +102,7 @@ def refresh_access_token(conn):
         "client_secret": APP_SECRET,
         "fb_exchange_token": ACCESS_TOKEN,
     })
-    conn.request("GET", f"/{API_VERSION}/oauth/access_token?{params}")
+    conn.request("GET", f"/{THREADS_API_VERSION}/oauth/access_token?{params}")
     response = conn.getresponse()
     data = json.loads(response.read().decode("utf-8"))
     print("refresh_access_token_response = ", data)
