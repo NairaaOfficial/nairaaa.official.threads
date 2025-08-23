@@ -2,9 +2,9 @@ name: COUNTER VIDEO
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '30 8 * * *'   # Runs at 2:00 PM IST
-  #   - cron: '30 13 * * *'  # Runs at 7:00 PM IST
+  schedule:
+    - cron: '30 8 * * *'   # Runs at 2:00 PM IST
+    - cron: '30 13 * * *'  # Runs at 7:00 PM IST
 
 jobs:
   run-script:
