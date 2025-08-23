@@ -48,7 +48,7 @@ jobs:
             THREADS_BASE_URL: ${{ secrets.THREADS_BASE_URL }}
             RENDER_BASE_IMAGE_URL: ${{ secrets.RENDER_BASE_IMAGE_URL }}
             RENDER_BASE_VIDEO_URL: ${{ secrets.RENDER_BASE_VIDEO_URL }}
-            CHATGPT_KEY: ${{ secrets.CHATGPT_KEY }}
+            THREADS_TEXT_CAPTION_KEY: ${{ secrets.THREADS_TEXT_CAPTION_KEY }}
         run: python3 THREADS/thread_text.py
         
       # # Check if .env has been modified, pull, and push the modified changes.
