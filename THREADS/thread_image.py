@@ -2,6 +2,7 @@ import http.client
 import urllib.parse
 import json
 import random
+import time
 import sys
 import io
 import os
@@ -445,7 +446,8 @@ if __name__ == "__main__":
 
         if container_id:
             print(f"Image container created: {container_id}")
-
+            print(f"Waiting for 30 seconds before publishing...")
+            time.sleep(30)
             print("Publishing media container...")
             post_id = publish_single_media_container(conn, container_id)
 
@@ -470,6 +472,8 @@ if __name__ == "__main__":
             carousel_id = create_carousel_container(conn, item_container_ids, TEXT)
             if carousel_id:
                 print(f"Carousel container created: {carousel_id}")
+                print(f"Waiting for 30 seconds before publishing...")
+                time.sleep(30)
                 print("Publishing carousel container...")
                 post_id = publish_carousel_container(conn, carousel_id)
                 if post_id:

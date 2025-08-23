@@ -294,7 +294,7 @@ def read_prompt(prompt_file):
     except Exception as e:
         return f"An error occurred: {e}"
 
-def get_video_urls_for_day(counter):
+def get_video_url_for_day(counter):
     """
     Returns a list of valid video URLs for a given day.
     Stops when a video is not found or max_attempts is reached.
@@ -339,7 +339,7 @@ if __name__ == "__main__":
     print("Generated TEXT:", TEXT)
     TEXT = filter_generated_text(TEXT)
     print("Filtered TEXT:", TEXT)
-    VIDEO_URL = get_video_urls_for_day(counter)
+    VIDEO_URL = get_video_url_for_day(counter)
     print("Video URL for the day:", VIDEO_URL)
 
     print("Creating video media container...")
@@ -347,6 +347,8 @@ if __name__ == "__main__":
 
     if container_id:
         print(f"Media container created: {container_id}")
+        print(f"Waiting for 30 seconds before publishing...")
+        time.sleep(30)
 
         print("Publishing media container...")
         post_id = publish_media_container(conn, container_id)

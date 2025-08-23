@@ -403,8 +403,8 @@ if __name__ == "__main__":
         poll_container_id = create_poll_container(conn, question, poll_options)
         if poll_container_id:
             print(f"Poll container created: {poll_container_id}")
-            print("Waiting 2 seconds for processing...")
-            time.sleep(2)
+            print("Waiting 30 seconds for processing...")
+            time.sleep(30)
 
             print("Publishing poll container...")
             post_id = publish_media_container(conn, poll_container_id)
@@ -427,8 +427,8 @@ if __name__ == "__main__":
         poll_container_id = create_poll_container(conn, question, poll_options)
         if poll_container_id:
             print(f"Poll container created: {poll_container_id}")
-            print("Waiting 2 seconds for processing...")
-            time.sleep(2)
+            print("Waiting 30 seconds for processing...")
+            time.sleep(30)
 
             print("Publishing poll container...")
             post_id = publish_media_container(conn, poll_container_id)
