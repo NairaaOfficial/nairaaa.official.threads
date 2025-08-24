@@ -323,8 +323,8 @@ if __name__ == "__main__":
 
     if container_id:
         print(f"Text container created: {container_id}")
-        print(f"Waiting for 30 seconds before publishing...")
-        time.sleep(30)
+        print(f"Waiting for 10 seconds before publishing...")
+        time.sleep(10)
         print("Publishing media container...")
         post_id = publish_media_container(conn, container_id)
         
